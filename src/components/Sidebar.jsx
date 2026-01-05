@@ -1,5 +1,5 @@
 // src/components/Sidebar.jsx
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { FaHome, FaMusic, FaMoneyBill, FaCog } from 'react-icons/fa'
 import ThemeContext from '../context/ThemeContext'

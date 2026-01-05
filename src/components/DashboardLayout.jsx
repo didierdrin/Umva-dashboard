@@ -1,4 +1,5 @@
 // src/components/DashboardLayout.jsx
+import React from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Dashboard from '../pages/Dashboard'

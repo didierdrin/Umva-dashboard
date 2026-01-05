@@ -1,5 +1,5 @@
 // src/pages/Settings.jsx
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import ThemeContext from '../context/ThemeContext'
 import supabase from '../supabaseClient'
 
