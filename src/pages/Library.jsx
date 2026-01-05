@@ -16,13 +16,13 @@ const Library = () => {
   }, [])
 
   const fetchSongs = async () => {
-    const { data: session } = await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
     const { data, error } = await supabase
       .from('songs')
       .select('*')
-      .eq('user_id', session.session.user.id)
+      .eq('user_id', session.user.id)
 
     if (error) console.error(error)
     else setSongs(data)
@@ -31,14 +31,14 @@ const Library = () => {
   const handleUpload = async (e) => {
     e.preventDefault()
     setLoading(true)
-    const { data: session } = await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
       setLoading(false)
       return
     }
 
     // Upload file to storage
-    const filePath = `${session.session.user.id}/${file.name}`
+    const filePath = `${session.user.id}/${file.name}`
     const { error: fileError } = await supabase.storage
       .from('audio_files')
       .upload(filePath, file)
@@ -54,7 +54,7 @@ const Library = () => {
     // Upload image if provided
     let imageUrl = ''
     if (image) {
-      const imagePath = `${session.session.user.id}/${image.name}`
+      const imagePath = `${session.user.id}/${image.name}`
       const { error: imageError } = await supabase.storage
         .from('cover_images')
         .upload(imagePath, image)
@@ -67,7 +67,7 @@ const Library = () => {
     const { error } = await supabase
       .from('songs')
       .insert({
-        user_id: session.session.user.id,
+        user_id: session.user.id,
         title,
         artist,
         file_url: fileUrl,

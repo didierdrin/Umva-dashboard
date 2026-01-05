@@ -10,13 +10,13 @@ const Payout = () => {
   }, [])
 
   const calculatePayout = async () => {
-    const { data: session } = await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
     const { data, error } = await supabase
       .from('songs')
       .select('unique_plays')
-      .eq('user_id', session.session.user.id)
+      .eq('user_id', session.user.id)
 
     if (error) console.error(error)
     else {
