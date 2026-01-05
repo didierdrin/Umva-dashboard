@@ -1,0 +1,36 @@
+/* src/index.css */
+body.light {
+  background-color: white;
+  color: black;
+}
+
+body.dark {
+  background-color: #121212;
+  color: white;
+}
+
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  position: fixed;
+  background-color: #f0f0f0; /* Adjust for theme */
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.dashboard-layout {
+  display: flex;
+}
+
+main {
+  margin-left: 200px;
+  padding: 20px;
+}
+
+/* Add more styles as needed */
