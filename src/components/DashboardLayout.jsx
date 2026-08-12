@@ -17,7 +17,8 @@ const DashboardLayout = () => {
           <Route path="/library" element={<Library />} />
           <Route path="/payout" element={<Payout />} />
           <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<Dashboard />} />  // Default to dashboard
+          {/* Default to dashboard */}
+          <Route path="*" element={<Dashboard />} />
         </Routes>
       </main>
     </div>

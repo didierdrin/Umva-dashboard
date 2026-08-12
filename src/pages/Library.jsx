@@ -1,8 +1,11 @@
 // src/pages/Library.jsx
-import React, { useEffect, useState } from 'react'
-import supabase from '../supabaseClient'
+import React, { useCallback, useEffect, useState } from 'react'
+import { listSongsByUser, insertSong, updateSong } from '../lib/dataApi'
+import { uploadAudio, uploadCover } from '../lib/cloudinary'
+import { useAuth } from '../context/AuthContext'
 
 const Library = () => {
+  const { user } = useAuth()
   const [songs, setSongs] = useState([])
   const [title, setTitle] = useState('')
   const [artist, setArtist] = useState('')
@@ -10,120 +13,142 @@ const Library = () => {
   const [image, setImage] = useState(null)
   const [subscription, setSubscription] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState(null)
+  const [error, setError] = useState(null)
+
+  const fetchSongs = useCallback(async () => {
+    if (!user) return
+    try {
+      setSongs(await listSongsByUser(user.id))
+      setError(null)
+    } catch (err) {
+      setError(err.message)
+    }
+  }, [user])
 
   useEffect(() => {
     fetchSongs()
-  }, [])
-
-  const fetchSongs = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) return
-
-    const { data, error } = await supabase
-      .from('songs')
-      .select('*')
-      .eq('user_id', session.user.id)
-
-    if (error) console.error(error)
-    else setSongs(data)
-  }
+  }, [fetchSongs])
 
   const handleUpload = async (e) => {
     e.preventDefault()
+    if (!user || !file) return
+
     setLoading(true)
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      setLoading(false)
-      return
-    }
+    setError(null)
+    try {
+      setStatus('Uploading audio…')
+      const fileUrl = await uploadAudio(file)
 
-    // Upload file to storage
-    const filePath = `${session.user.id}/${file.name}`
-    const { error: fileError } = await supabase.storage
-      .from('audio_files')
-      .upload(filePath, file)
+      let imageUrl = ''
+      if (image) {
+        setStatus('Uploading cover art…')
+        imageUrl = await uploadCover(image)
+      }
 
-    if (fileError) {
-      console.error(fileError)
-      setLoading(false)
-      return
-    }
-
-    const fileUrl = supabase.storage.from('audio_files').getPublicUrl(filePath).data.publicUrl
-
-    // Upload image if provided
-    let imageUrl = ''
-    if (image) {
-      const imagePath = `${session.user.id}/${image.name}`
-      const { error: imageError } = await supabase.storage
-        .from('cover_images')
-        .upload(imagePath, image)
-
-      if (imageError) console.error(imageError)
-      else imageUrl = supabase.storage.from('cover_images').getPublicUrl(imagePath).data.publicUrl
-    }
-
-    // Insert metadata to DB
-    const { error } = await supabase
-      .from('songs')
-      .insert({
-        user_id: session.user.id,
+      setStatus('Saving…')
+      await insertSong({
+        user_id: user.id,
         title,
         artist,
         file_url: fileUrl,
         image_url: imageUrl,
         subscription,
-        total_plays: 0,
-        unique_plays: 0
       })
 
-    if (error) console.error(error)
-    else {
-      fetchSongs()
       setTitle('')
       setArtist('')
       setFile(null)
       setImage(null)
       setSubscription(false)
+      e.target.reset()
+      await fetchSongs()
+      setStatus('Song added.')
+    } catch (err) {
+      // The previous version only console.error'd these, so a failed upload
+      // looked identical to a successful one.
+      setError(err.message)
+      setStatus(null)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const toggleSubscription = async (songId, currentSub) => {
-    const { error } = await supabase
-      .from('songs')
-      .update({ subscription: !currentSub })
-      .eq('id', songId)
-
-    if (error) console.error(error)
-    else fetchSongs()
+    try {
+      await updateSong(songId, { subscription: !currentSub })
+      await fetchSongs()
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   return (
     <div className="library">
       <h1>Library</h1>
+
+      {error && <div className="auth-error" role="alert">{error}</div>}
+      {status && !error && <p>{status}</p>}
+
       <form onSubmit={handleUpload}>
-        <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        <input type="text" placeholder="Artist" value={artist} onChange={(e) => setArtist(e.target.value)} required />
-        <input type="file" accept="audio/*,video/*" onChange={(e) => setFile(e.target.files[0])} required />
-        <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} />
+        <input
+          type="text"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+          disabled={loading}
+        />
+        <input
+          type="text"
+          placeholder="Artist"
+          value={artist}
+          onChange={(e) => setArtist(e.target.value)}
+          required
+          disabled={loading}
+        />
+        <input
+          type="file"
+          accept="audio/*"
+          onChange={(e) => setFile(e.target.files[0])}
+          required
+          disabled={loading}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files[0])}
+          disabled={loading}
+        />
         <label>
           Subscription Required:
-          <input type="checkbox" checked={subscription} onChange={(e) => setSubscription(e.target.checked)} />
+          <input
+            type="checkbox"
+            checked={subscription}
+            onChange={(e) => setSubscription(e.target.checked)}
+            disabled={loading}
+          />
         </label>
-        <button type="submit" disabled={loading}>{loading ? 'Uploading...' : 'Add Song'}</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Uploading…' : 'Add Song'}
+        </button>
       </form>
+
       <h2>Your Songs</h2>
-      <ul>
-        {songs.map((song) => (
-          <li key={song.id}>
-            {song.title} by {song.artist}
-            <button onClick={() => toggleSubscription(song.id, song.subscription)}>
-              {song.subscription ? 'Disable Subscription' : 'Enable Subscription'}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {songs.length === 0 ? (
+        <p>No songs yet.</p>
+      ) : (
+        <ul>
+          {songs.map((song) => (
+            <li key={song.id}>
+              {song.title} by {song.artist}
+              <button onClick={() => toggleSubscription(song.id, song.subscription)}>
+                {song.subscription ? 'Disable Subscription' : 'Enable Subscription'}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

@@ -26,25 +26,25 @@ create policy songs_anon_read
 drop policy if exists songs_owner_read on public.songs;
 create policy songs_owner_read
   on public.songs for select to authenticated
-  using ((select auth.user_id()) = user_id::text);
+  using ((select auth.uid()) = user_id);
 
 drop policy if exists songs_owner_insert on public.songs;
 create policy songs_owner_insert
   on public.songs for insert to authenticated
-  with check ((select auth.user_id()) = user_id::text);
+  with check ((select auth.uid()) = user_id);
 
 drop policy if exists songs_owner_update on public.songs;
 create policy songs_owner_update
   on public.songs for update to authenticated
-  using ((select auth.user_id()) = user_id::text)
-  with check ((select auth.user_id()) = user_id::text);
+  using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
 
 drop policy if exists songs_owner_delete on public.songs;
 create policy songs_owner_delete
   on public.songs for delete to authenticated
-  using ((select auth.user_id()) = user_id::text);
+  using ((select auth.uid()) = user_id);
 
--- NOTE ON THE CAST: neon_auth."user".id is uuid, while auth.user_id() returns
--- the JWT `sub` claim as text. If your Neon version returns uuid instead, drop
--- the ::text on user_id in the five policies above, or the comparison silently
--- matches nothing and every query comes back empty.
+-- NOTE: auth.uid() returns uuid and songs.user_id is uuid, so these compare
+-- directly with no cast - which keeps songs_user_id_idx usable. Neon also exposes
+-- auth.user_id() returning text; using it here would force a cast on the column
+-- and disable that index.

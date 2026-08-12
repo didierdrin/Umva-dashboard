@@ -1,32 +1,43 @@
 // src/App.jsx
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import supabase from './supabaseClient'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import DashboardLayout from './components/DashboardLayout'
 
-function App() {
-  const [session, setSession] = useState(null)
+function AppRoutes() {
+  const { user, loading } = useAuth()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+  // Render nothing decisive until the session check finishes, otherwise a
+  // signed-in user is bounced to /login for a frame on every page load.
+  if (loading) {
+    return <div className="auth-page">Loading…</div>
+  }
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/*" element={session ? <DashboardLayout /> : <Navigate to="/login" />} />
+      <Route
+        path="/login"
+        element={user ? <Navigate to="/dashboard" replace /> : <Login />}
+      />
+      <Route
+        path="/signup"
+        element={user ? <Navigate to="/dashboard" replace /> : <Signup />}
+      />
+      <Route
+        path="/*"
+        element={user ? <DashboardLayout /> : <Navigate to="/login" replace />}
+      />
     </Routes>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   )
 }
 

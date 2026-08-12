@@ -1,25 +1,22 @@
 // src/pages/Settings.jsx
 import React, { useContext } from 'react'
 import ThemeContext from '../context/ThemeContext'
-import supabase from '../supabaseClient'
+import { useAuth } from '../context/AuthContext'
 
 const Settings = () => {
   const { theme, toggleTheme } = useContext(ThemeContext)
-
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.error(error)
-    // Navigate to login handled by App
-  }
+  const { user, signOut } = useAuth()
 
   return (
     <div className="settings">
       <h1>Settings</h1>
+      {user && <p>Signed in as {user.email}</p>}
       <label>
         Dark Mode:
         <input type="checkbox" checked={theme === 'dark'} onChange={toggleTheme} />
       </label>
-      <button onClick={handleLogout}>Logout</button>
+      {/* Clearing the user in context flips AppRoutes back to /login. */}
+      <button onClick={signOut}>Logout</button>
     </div>
   )
 }
