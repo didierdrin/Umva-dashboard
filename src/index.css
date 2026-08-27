@@ -1,154 +1,156 @@
-/* src/index.css */
+/* src/index.css
+   Design tokens lifted from the Umva mobile app theme (lib/theme/app_theme.dart):
+   primary #F06543 -> #EF8A6F gradient, dark surfaces #121212 / #1E1E1E,
+   Playfair Display for display type. Inter is added here for UI/body text. */
+
+:root {
+  --font-display: 'Playfair Display', 'Georgia', serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --primary: #f06543;
+  --primary-light: #ef8a6f;
+  --primary-dark: #d9502f;
+  --primary-gradient: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-sm: 0 1px 3px rgba(20, 12, 8, 0.06);
+  --shadow-md: 0 8px 24px rgba(20, 12, 8, 0.08);
+  --shadow-lg: 0 16px 40px rgba(20, 12, 8, 0.14);
+  --shadow-primary: 0 10px 28px rgba(240, 101, 67, 0.28);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 body.light {
-  background-color: white;
-  color: black;
+  --bg: #faf8f6;
+  --surface: #ffffff;
+  --surface-alt: #f4ede9;
+  --border: rgba(31, 20, 15, 0.1);
+  --border-strong: rgba(31, 20, 15, 0.16);
+  --text: #1c1410;
+  --text-muted: rgba(28, 20, 16, 0.62);
+  --text-faint: rgba(28, 20, 16, 0.42);
+  --danger: #dc3545;
+  --danger-bg: rgba(220, 53, 69, 0.1);
+  --success: #1ea672;
+  --success-bg: rgba(30, 166, 114, 0.12);
+  --scrollbar: rgba(31, 20, 15, 0.18);
+
+  background-color: var(--bg);
+  color: var(--text);
 }
 
 body.dark {
-  background-color: #121212;
-  color: white;
+  --bg: #121212;
+  --surface: #1e1e1e;
+  --surface-alt: #262019;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --text: #f5f1ee;
+  --text-muted: rgba(245, 241, 238, 0.66);
+  --text-faint: rgba(245, 241, 238, 0.44);
+  --danger: #ff6b7a;
+  --danger-bg: rgba(255, 107, 122, 0.14);
+  --success: #4fd3a0;
+  --success-bg: rgba(79, 211, 160, 0.14);
+  --scrollbar: rgba(255, 255, 255, 0.16);
+
+  background-color: var(--bg);
+  color: var(--text);
 }
 
-.sidebar {
-  width: 200px;
-  height: 100vh;
-  position: fixed;
-  background-color: #f0f0f0; /* Adjust for theme */
-}
-
-.sidebar ul {
-  list-style: none;
-}
-
-.sidebar li {
-  margin: 10px 0;
-}
-
-.dashboard-layout {
-  display: flex;
-}
-
-main {
-  margin-left: 200px;
-  padding: 20px;
-}
-
-/* Add more styles as needed */
-/* ---------- Auth pages (Login / Signup) ---------- */
-.auth-page {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.auth-card {
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-  padding: 32px;
-  border-radius: 12px;
-  border: 1px solid rgba(128, 128, 128, 0.25);
-  background-color: rgba(128, 128, 128, 0.06);
-}
-
-.auth-title {
-  margin: 0 0 4px;
-  font-size: 1.6rem;
-}
-
-.auth-subtitle {
-  margin: 0 0 24px;
-  opacity: 0.7;
-  font-size: 0.92rem;
-}
-
-.auth-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.auth-input {
-  width: 100%;
-  padding: 11px 12px;
-  margin-bottom: 16px;
-  border-radius: 8px;
-  border: 1px solid rgba(128, 128, 128, 0.4);
-  background: transparent;
-  color: inherit;
-  font-size: 0.95rem;
+* {
   box-sizing: border-box;
 }
 
-.auth-input:focus {
-  outline: 2px solid #f06543;
-  outline-offset: 1px;
-  border-color: transparent;
+html {
+  scroll-behavior: smooth;
 }
 
-.auth-input:disabled {
-  opacity: 0.6;
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.35s var(--ease), color 0.35s var(--ease);
 }
 
-/* The reveal button sits inside the field, so the input needs room for it. */
-.auth-password-wrap {
-  position: relative;
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
 
-.auth-password-wrap .auth-input {
-  padding-right: 68px;
-}
-
-.auth-reveal {
-  position: absolute;
-  top: 10px;
-  right: 8px;
-  padding: 4px 8px;
-  border: none;
-  background: transparent;
+a {
   color: inherit;
-  opacity: 0.7;
-  cursor: pointer;
-  font-size: 0.82rem;
 }
 
-.auth-reveal:hover:not(:disabled) {
-  opacity: 1;
+code, pre {
+  font-family: 'SFMono-Regular', Consolas, monospace;
 }
 
-.auth-submit {
-  padding: 12px;
-  margin-top: 4px;
-  border: none;
-  border-radius: 8px;
-  background-color: #f06543;
-  color: white;
-  font-size: 0.98rem;
-  font-weight: 600;
-  cursor: pointer;
+::selection {
+  background: var(--primary);
+  color: #fff;
 }
 
-.auth-submit:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-.auth-error {
-  padding: 10px 12px;
-  margin-bottom: 18px;
-  border-radius: 8px;
-  border: 1px solid rgba(220, 53, 69, 0.4);
-  background-color: rgba(220, 53, 69, 0.12);
-  color: #dc3545;
-  font-size: 0.88rem;
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.auth-alt {
-  margin: 20px 0 0;
-  text-align: center;
-  font-size: 0.9rem;
-  opacity: 0.85;
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* ---------- shared keyframes ---------- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 101, 67, 0.35); }
+  50% { box-shadow: 0 0 0 8px rgba(240, 101, 67, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

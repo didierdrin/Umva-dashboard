@@ -1,6 +1,7 @@
 // src/pages/Signup.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { FaHeadphonesAlt } from 'react-icons/fa'
 import { signUp } from '../lib/authClient'
 import { useAuth } from '../context/AuthContext'
 
@@ -52,6 +53,15 @@ const Signup = () => {
 
   return (
     <div className="auth-page">
+      <div className="auth-brand-panel">
+        <div className="auth-brand-mark">
+          <FaHeadphonesAlt />
+        </div>
+        <h2>Join the artists on Umva.</h2>
+        <p>Upload your tracks, reach listeners, and get paid for every unique play.</p>
+      </div>
+
+      <div className="auth-form-panel">
       <form className="auth-card" onSubmit={handleSubmit} noValidate>
         <h1 className="auth-title">Create your account</h1>
         <p className="auth-subtitle">Start publishing your music on Umva.</p>
@@ -126,6 +136,7 @@ const Signup = () => {
         />
 
         <button className="auth-submit" type="submit" disabled={!canSubmit}>
+          {loading && <span className="spinner" />}
           {loading ? 'Creating account…' : 'Create account'}
         </button>
 
@@ -133,6 +144,7 @@ const Signup = () => {
           Already have an account? <Link to="/login">Sign in</Link>
         </p>
       </form>
+      </div>
     </div>
   )
 }

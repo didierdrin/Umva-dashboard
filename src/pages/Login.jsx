@@ -1,6 +1,7 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { FaHeadphonesAlt } from 'react-icons/fa'
 import { signIn } from '../lib/authClient'
 import { useAuth } from '../context/AuthContext'
 
@@ -32,6 +33,15 @@ const Login = () => {
 
   return (
     <div className="auth-page">
+      <div className="auth-brand-panel">
+        <div className="auth-brand-mark">
+          <FaHeadphonesAlt />
+        </div>
+        <h2>Your music, your numbers.</h2>
+        <p>Track plays, manage your library, and see exactly what you've earned — all in one place.</p>
+      </div>
+
+      <div className="auth-form-panel">
       <form className="auth-card" onSubmit={handleSubmit} noValidate>
         <h1 className="auth-title">Welcome back</h1>
         <p className="auth-subtitle">Sign in to manage your music.</p>
@@ -84,6 +94,7 @@ const Login = () => {
           type="submit"
           disabled={loading || !email || !password}
         >
+          {loading && <span className="spinner" />}
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
 
@@ -91,6 +102,7 @@ const Login = () => {
           Don't have an account? <Link to="/signup">Sign up</Link>
         </p>
       </form>
+      </div>
     </div>
   )
 }
