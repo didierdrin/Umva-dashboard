@@ -1,7 +1,6 @@
 // src/pages/Login.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FaHeadphonesAlt } from 'react-icons/fa'
 import { signIn } from '../lib/authClient'
 import { useAuth } from '../context/AuthContext'
 
@@ -35,7 +34,7 @@ const Login = () => {
     <div className="auth-page">
       <div className="auth-brand-panel">
         <div className="auth-brand-mark">
-          <FaHeadphonesAlt />
+          <img src="/umva-mark-white.png" alt="" />
         </div>
         <h2>Your music, your numbers.</h2>
         <p>Track plays, manage your library, and see exactly what you've earned — all in one place.</p>

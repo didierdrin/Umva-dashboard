@@ -1,7 +1,6 @@
 // src/pages/Signup.jsx
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { FaHeadphonesAlt } from 'react-icons/fa'
 import { signUp } from '../lib/authClient'
 import { useAuth } from '../context/AuthContext'
 
@@ -55,7 +54,7 @@ const Signup = () => {
     <div className="auth-page">
       <div className="auth-brand-panel">
         <div className="auth-brand-mark">
-          <FaHeadphonesAlt />
+          <img src="/umva-mark-white.png" alt="" />
         </div>
         <h2>Join the artists on Umva.</h2>
         <p>Upload your tracks, reach listeners, and get paid for every unique play.</p>

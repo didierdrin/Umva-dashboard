@@ -1,7 +1,7 @@
 // src/components/Sidebar.jsx
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import { FaHeadphonesAlt, FaHome, FaMusic, FaMoneyBillWave, FaCog, FaSignOutAlt } from 'react-icons/fa'
+import { FaHome, FaMusic, FaMoneyBillWave, FaCog, FaSignOutAlt, FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
 
 const NAV_ITEMS = [
@@ -11,15 +11,24 @@ const NAV_ITEMS = [
   { to: '/settings', label: 'Settings', icon: FaCog },
 ]
 
-const Sidebar = () => {
+const Sidebar = ({ collapsed, onToggleCollapsed }) => {
   const { user, signOut } = useAuth()
   const initial = (user?.name || user?.email || '?').trim().charAt(0).toUpperCase()
 
   return (
-    <div className="sidebar">
+    <div className={`sidebar${collapsed ? ' collapsed' : ''}`}>
+      <button
+        className="sidebar-collapse-btn"
+        onClick={onToggleCollapsed}
+        aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+      >
+        {collapsed ? <FaChevronRight /> : <FaChevronLeft />}
+      </button>
+
       <div className="sidebar-brand">
         <div className="sidebar-brand-mark">
-          <FaHeadphonesAlt />
+          <img src="/umva-mark-white.png" alt="" />
         </div>
         <div>
           <div className="sidebar-brand-text">Umva</div>
@@ -32,6 +41,7 @@ const Sidebar = () => {
           <li key={to}>
             <NavLink
               to={to}
+              title={label}
               className={({ isActive }) => `sidebar-link${isActive ? ' active' : ''}`}
             >
               <Icon />

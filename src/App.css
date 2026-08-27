@@ -15,6 +15,11 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  transition: margin-left 0.25s var(--ease);
+}
+
+.dashboard-layout.sidebar-collapsed .dashboard-main {
+  margin-left: 76px;
 }
 
 .dashboard-content {
@@ -69,6 +74,12 @@
 .sidebar-brand:hover .sidebar-brand-mark {
   transform: rotate(-8deg) scale(1.08);
   box-shadow: 0 12px 26px rgba(240, 101, 67, 0.4);
+}
+
+.sidebar-brand-mark img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
 }
 
 .sidebar-brand-text {
@@ -208,7 +219,62 @@
   background: var(--danger-bg);
 }
 
+/* ---------- sidebar collapse toggle ---------- */
+.sidebar-collapse-btn {
+  position: absolute;
+  top: 30px;
+  right: -12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  z-index: 21;
+}
+
+.sidebar-collapse-btn:hover {
+  color: var(--primary);
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar.collapsed {
+  width: 76px;
+  padding: 22px 12px;
+  align-items: center;
+}
+
+.sidebar.collapsed .sidebar-brand-text,
+.sidebar.collapsed .sidebar-brand-tagline,
+.sidebar.collapsed .sidebar-user,
+.sidebar.collapsed .sidebar-link span:not(.sidebar-icon-only) {
+  display: none;
+}
+
+.sidebar.collapsed a,
+.sidebar.collapsed .sidebar-link {
+  justify-content: center;
+  padding: 12px;
+}
+
+.sidebar.collapsed .sidebar-footer {
+  justify-content: center;
+}
+
+.sidebar.collapsed .sidebar-collapse-btn {
+  right: -12px;
+}
+
 @media (max-width: 860px) {
+  .sidebar-collapse-btn { display: none; }
   .sidebar { width: 76px; padding: 22px 12px; align-items: center; }
   .sidebar-brand-text,
   .sidebar-brand-tagline,
@@ -959,6 +1025,12 @@ table.data-table {
   margin-bottom: 26px;
   animation: scaleIn 0.5s var(--ease);
   position: relative;
+}
+
+.auth-brand-mark img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
 }
 
 .auth-brand-panel h2 {
