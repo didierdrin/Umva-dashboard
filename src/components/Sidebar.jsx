@@ -21,7 +21,10 @@ const Sidebar = () => {
         <div className="sidebar-brand-mark">
           <FaHeadphonesAlt />
         </div>
-        <span className="sidebar-brand-text">Umva</span>
+        <div>
+          <div className="sidebar-brand-text">Umva</div>
+          <div className="sidebar-brand-tagline">Artist Studio</div>
+        </div>
       </div>
 
       <ul>

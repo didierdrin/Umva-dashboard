@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { FaWallet } from 'react-icons/fa'
 import { listSongsByUser } from '../lib/dataApi'
 import { useAuth } from '../context/AuthContext'
+import AnimatedNumber from '../components/AnimatedNumber'
 
 const RATE_PER_UNIQUE_PLAY = 0.4 * 5000
 
@@ -35,8 +36,8 @@ const Payout = () => {
 
       <div className="hero-card">
         <span className="hero-label">Estimated Payout</span>
-        <div className="hero-value">{payout.toLocaleString()} RWF</div>
-        <p className="hero-sub">Based on {uniquePlays.toLocaleString()} unique plays</p>
+        <div className="hero-value"><AnimatedNumber value={payout} duration={1100} format={(n) => `${Math.round(n).toLocaleString()} RWF`} /></div>
+        <p className="hero-sub">Based on <AnimatedNumber value={uniquePlays} /> unique plays</p>
       </div>
 
       <div className="panel">
@@ -51,7 +52,7 @@ const Payout = () => {
           <div className="stat-card">
             <div className="stat-icon"><FaWallet /></div>
             <span className="stat-label">Unique plays</span>
-            <span className="stat-value">{uniquePlays.toLocaleString()}</span>
+            <span className="stat-value"><AnimatedNumber value={uniquePlays} /></span>
           </div>
         </div>
       </div>
