@@ -26,6 +26,11 @@
   padding: 28px 36px 48px;
   flex: 1;
   animation: fadeInUp 0.45s var(--ease);
+  transition: padding-bottom 0.25s var(--ease);
+}
+
+.dashboard-content.has-player {
+  padding-bottom: 120px;
 }
 
 @media (max-width: 860px) {
@@ -692,6 +697,38 @@ table.data-table {
   font-size: 0.82rem;
 }
 
+.row-play-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.72rem;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.row-play-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: scale(1.08);
+}
+
+.row-play-btn.playing {
+  background: var(--primary-gradient);
+  color: #fff;
+  box-shadow: var(--shadow-primary);
+}
+
+.data-table tbody tr.row-active {
+  background: rgba(240, 101, 67, 0.06);
+}
+
 /* ---------- badges ---------- */
 .badge {
   display: inline-flex;
@@ -1184,4 +1221,155 @@ table.data-table {
 
 .auth-alt a:hover {
   text-decoration: underline;
+}
+
+/* ============================================================
+   Bottom player bar — persists across pages, mirrors the mobile app's
+   mini-player (see umva_v1_0_1 OverallScreen._buildMiniPlayer).
+   ============================================================ */
+.player-bar {
+  position: fixed;
+  left: 240px;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 24px rgba(20, 12, 8, 0.1);
+  animation: slideUpBar 0.3s var(--ease);
+  transition: left 0.25s var(--ease), background-color 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+
+@keyframes slideUpBar {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.dashboard-layout.sidebar-collapsed .player-bar {
+  left: 76px;
+}
+
+@media (max-width: 860px) {
+  .player-bar { left: 76px; }
+}
+
+.player-bar-track {
+  height: 4px;
+  background: var(--surface-alt);
+  cursor: pointer;
+  position: relative;
+}
+
+.player-bar-fill {
+  height: 100%;
+  background: var(--primary-gradient);
+  transition: width 0.1s linear;
+}
+
+.player-bar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 24px;
+}
+
+.player-bar-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.player-bar-cover,
+.player-bar-cover-fallback {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+.player-bar-cover-fallback {
+  background: var(--primary-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-bar-text {
+  min-width: 0;
+}
+
+.player-bar-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-bar-artist {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-bar-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.player-bar-time {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.player-bar-play {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--primary-gradient);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-primary);
+  transition: transform 0.18s var(--ease);
+}
+
+.player-bar-play:hover {
+  transform: scale(1.06);
+}
+
+.player-bar-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-alt);
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.player-bar-close:hover {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+@media (max-width: 640px) {
+  .player-bar-time { display: none; }
 }

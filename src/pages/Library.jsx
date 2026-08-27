@@ -1,12 +1,14 @@
 // src/pages/Library.jsx
 import React, { useCallback, useEffect, useState } from 'react'
-import { FaMusic, FaFileAudio, FaImage, FaCompactDisc } from 'react-icons/fa'
+import { FaMusic, FaFileAudio, FaImage, FaCompactDisc, FaPlay, FaPause } from 'react-icons/fa'
 import { listSongsByUser, insertSong, updateSong } from '../lib/dataApi'
 import { uploadAudio, uploadCover } from '../lib/cloudinary'
 import { useAuth } from '../context/AuthContext'
+import { usePlayer } from '../context/PlayerContext'
 
 const Library = () => {
   const { user } = useAuth()
+  const { current, isPlaying, playSong } = usePlayer()
   const [songs, setSongs] = useState([])
   const [title, setTitle] = useState('')
   const [artist, setArtist] = useState('')
@@ -196,10 +198,20 @@ const Library = () => {
                 </tr>
               </thead>
               <tbody>
-                {songs.map((song) => (
-                  <tr key={song.id}>
+                {songs.map((song) => {
+                  const isCurrent = current?.id === song.id
+                  return (
+                  <tr key={song.id} className={isCurrent ? 'row-active' : ''}>
                     <td>
                       <div className="track-cell">
+                        <button
+                          className={`row-play-btn${isCurrent && isPlaying ? ' playing' : ''}`}
+                          onClick={() => playSong(song)}
+                          aria-label={isCurrent && isPlaying ? 'Pause' : 'Play'}
+                          title={isCurrent && isPlaying ? 'Pause' : 'Play'}
+                        >
+                          {isCurrent && isPlaying ? <FaPause /> : <FaPlay />}
+                        </button>
                         {song.image_url ? (
                           <img className="track-cover" src={song.image_url} alt="" />
                         ) : (
@@ -228,7 +240,8 @@ const Library = () => {
                       </button>
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
